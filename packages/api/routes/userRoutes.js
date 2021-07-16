@@ -1,55 +1,62 @@
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const fs = require('fs')
+const bcrypt = require(`bcryptjs`)
+const jwt = require(`jsonwebtoken`)
+const fs = require(`fs`)
 
 module.exports = function (fastify, opts, next) {
   const registerSchema = {
     schema: {
-      description: 'Register a new User',
-      tags: ['User'],
-      summary: 'Register a new User',
+      description: `Register a new User`,
+      tags: [`User`],
+      summary: `Register a new User`,
       body: {
-        type: 'object',
-        required: ['username', 'email', 'password'],
+        type: `object`,
+        required: [`username`, `email`, `password`],
         properties: {
-          username: { type: 'string' },
-          email: { type: 'string' },
-          password: { type: 'string' }
+          username: { type: `string` },
+          email: { type: `string` },
+          password: { type: `string` }
         }
       },
       response: {
         200: {
-          type: 'object',
+          type: `object`,
           properties: {
-            _id: { type: 'string' },
-            username: { type: 'string' },
-            email: { type: 'string' },
-            roles: { type: 'array', items: { type: 'string' } }
+            _id: { type: `string` },
+            username: { type: `string` },
+            email: { type: `string` },
+            roles: { type: `array`, items: { type: `string` } }
           }
         },
         409: {
-          type: 'object',
+          type: `object`,
           properties: {
-            errorCode: { type: 'string' },
-            errorMessage: { type: 'string' }
+            errorCode: { type: `string` },
+            errorMessage: { type: `string` }
           }
         }
       }
     }
   }
 
-  fastify.post('/register', registerSchema, async (req, reply) => {
-    const User = fastify.mongo.db.model('User')
+  fastify.post(`/register`, registerSchema, async (req, reply) => {
+    const User = fastify.mongo.db.model(`User`)
 
     User.findOne({ username: req.body.username }, async (error, user) => {
       if (error) throw error
 
       if (user) {
-        return reply.code(409).send({ errorCode: 409, errorMessage: 'Username already exists' })
+        return reply
+          .code(409)
+          .send({ errorCode: 409, errorMessage: `Username already exists` })
       }
 
-      const password = await bcrypt.hash(req.body.password, await bcrypt.genSalt(10))
-      const newUser = new User(Object.assign(req.body, { password, roles: ['ROLE_USER'] }))
+      const password = await bcrypt.hash(
+        req.body.password,
+        await bcrypt.genSalt(10)
+      )
+      const newUser = new User(
+        Object.assign(req.body, { password, roles: [`ROLE_USER`] })
+      )
       const { _id, username, email, roles } = await newUser.save()
 
       reply.send({ _id, username, email, roles })
@@ -58,56 +65,68 @@ module.exports = function (fastify, opts, next) {
 
   const loginSchema = {
     schema: {
-      description: 'Login User API',
-      tags: ['User'],
-      summary: 'Create a JWT for authenticate API calls',
+      description: `Login User API`,
+      tags: [`User`],
+      summary: `Create a JWT for authenticate API calls`,
       body: {
-        type: 'object',
-        required: ['username', 'password'],
+        type: `object`,
+        required: [`username`, `password`],
         properties: {
-          username: { type: 'string' },
-          password: { type: 'string' }
+          username: { type: `string` },
+          password: { type: `string` }
         }
       },
       response: {
         200: {
-          type: 'object',
+          type: `object`,
           properties: {
-            token: { type: 'string' }
+            token: { type: `string` }
           }
         },
         401: {
-          type: 'object',
+          type: `object`,
           properties: {
-            errorCode: { type: 'string' },
-            errorMessage: { type: 'string' }
+            errorCode: { type: `string` },
+            errorMessage: { type: `string` }
           }
         }
       }
     }
   }
 
-  fastify.post('/login', loginSchema, async (req, reply) => {
-    const User = fastify.mongo.db.model('User')
+  fastify.post(`/login`, loginSchema, async (req, reply) => {
+    const User = fastify.mongo.db.model(`User`)
 
     User.findOne({ username: req.body.username }, async (error, user) => {
       if (error) throw error
 
       if (!user) {
-        return reply.code(409).send({ errorCode: 409, errorMessage: 'Login failed' })
+        return reply
+          .code(409)
+          .send({ errorCode: 409, errorMessage: `Login failed` })
       }
 
-      if (await bcrypt.compare(req.body.password, user.password) === false) {
-        return reply.code(409).send({ errorCode: 409, errorMessage: 'Login failed' })
+      if ((await bcrypt.compare(req.body.password, user.password)) === false) {
+        return reply
+          .code(409)
+          .send({ errorCode: 409, errorMessage: `Login failed` })
       }
 
       const { _id, username, email, roles } = user
 
-      jwt.sign({ _id, username, email, roles }, { key: fs.readFileSync('./config/jwt/private.pem'), passphrase: process.env.JWT_PASSPHRASE }, { algorithm: 'RS256' }, (error, token) => {
-        if (error) throw error
+      jwt.sign(
+        { _id, username, email, roles },
+        {
+          key: fs.readFileSync(`./config/jwt/private.pem`),
+          passphrase: process.env.JWT_PASSPHRASE
+        },
+        { algorithm: `RS256` },
+        (error, token) => {
+          if (error) throw error
 
-        reply.send({ token })
-      })
+          reply.send({ token })
+        }
+      )
     })
   })
 

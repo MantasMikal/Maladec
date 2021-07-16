@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require(`mongoose`)
 
 module.exports = function (fastify, opts, next) {
   const Schema = mongoose.Schema
@@ -11,7 +11,7 @@ module.exports = function (fastify, opts, next) {
     created: { type: Date, default: Date.now }
   })
 
-  fastify.mongo.db.model('User', User)
+  fastify.mongo.db.model(`User`, User)
 
   next()
 }

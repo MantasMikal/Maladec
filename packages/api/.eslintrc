@@ -1,5 +1,5 @@
 {
-  "extends": "standard",
+  "extends": ["standard", "plugin:prettier/recommended"],
   "env": {
     "browser": false,
     "node": true
