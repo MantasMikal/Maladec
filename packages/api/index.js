@@ -50,6 +50,7 @@ fastify
   .register(require(`fastify-auth`))
   .register(require(`./auth/jwt-auth`))
   .register(require(`./routes/userRoutes`), { prefix: `/users` })
+  .register(require(`./routes/pointsRoutes`), { prefix: `/points` })
   .register(require(`./routes/indexRoutes`))
 
 fastify.listen(port, function (err) {
