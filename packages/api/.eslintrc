@@ -1,0 +1,15 @@
+{
+  "extends": "standard",
+  "env": {
+    "browser": false,
+    "node": true
+  },
+  "plugins": ["prettier"],
+  "rules": {
+    "no-dupe-args": "error",
+    "no-unused-vars": "error",
+    "prettier/prettier": "error",
+    "no-console": "warn",
+    "quotes": ["error", "backtick"]
+  }
+}
