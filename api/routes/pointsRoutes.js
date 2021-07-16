@@ -25,7 +25,7 @@ module.exports = function (fastify, opts, next) {
         }
       }
     },
-    preHandler: fastify.auth([fastify.jwtAuth])
+    // preHandler: fastify.auth([fastify.jwtAuth])
   }
 
   fastify.post(`/give`, givePointsSchema, async (req, reply) => {
@@ -79,7 +79,7 @@ module.exports = function (fastify, opts, next) {
         }
       }
     },
-    preHandler: fastify.auth([fastify.jwtAuth])
+    // preHandler: fastify.auth([fastify.jwtAuth])
   }
 
   fastify.post(`/get`, getPointsSchema, async (req, reply) => {

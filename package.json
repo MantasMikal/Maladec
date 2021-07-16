@@ -8,8 +8,8 @@
   },
   "author": "",
   "workspaces": [
-    "./packages/api",
-    "./packages/web"
+    "./api",
+    "./app"
   ],
-  "license": "ISC"
+  "license": "MIT"
 }

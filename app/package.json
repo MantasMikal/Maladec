@@ -1,4 +1,7 @@
 {
+  "name": "app",
+  "version": "1.0.0",
+  "description": "Maladec app",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -8,6 +11,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "expo": "~42.0.1",
     "expo-status-bar": "~1.0.4",
     "react": "16.13.1",
@@ -17,6 +21,5 @@
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"
-  },
-  "private": true
+  }
 }
